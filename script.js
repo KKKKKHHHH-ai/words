@@ -71,11 +71,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const deleteWord = async (id) => {
-        const { error } = await supabase.from('words').delete().match({ id: id });
-        if (error) {
-            console.error('Error deleting word:', error);
-        } else {
-            fetchWords();
+        try {
+            console.log('Deleting word with ID:', id); // 디버깅 로그
+            const { error } = await supabase
+                .from('words')
+                .delete()
+                .eq('id', id);
+            
+            if (error) {
+                console.error('Error deleting word:', error);
+                alert('삭제에 실패했습니다: ' + error.message);
+            } else {
+                console.log('Word deleted successfully');
+                fetchWords(); // 목록 새로고침
+            }
+        } catch (err) {
+            console.error('Delete operation failed:', err);
+            alert('삭제 중 오류가 발생했습니다.');
         }
     };
 
@@ -185,11 +197,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addButton.addEventListener('click', addWord);
 
-    wordList.addEventListener('click', (e) => {
+    wordList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('delete-button')) {
-            const id = parseInt(e.target.getAttribute('data-id'), 10);
-            if (!isNaN(id)) {
-                deleteWord(id);
+            const idStr = e.target.getAttribute('data-id');
+            console.log('Delete button clicked, ID string:', idStr); // 디버깅 로그
+            
+            if (idStr && confirm('이 단어를 삭제하시겠습니까?')) {
+                const id = parseInt(idStr, 10);
+                console.log('Parsed ID:', id); // 디버깅 로그
+                
+                if (!isNaN(id)) {
+                    await deleteWord(id);
+                } else {
+                    console.error('Invalid ID:', idStr);
+                    alert('잘못된 ID입니다.');
+                }
             }
         }
     });
