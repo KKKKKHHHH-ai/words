@@ -30,13 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
             wordList.appendChild(header);
 
             words.forEach((word, index) => {
+                console.log('Rendering word:', word); // 디버깅 로그
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <span class="word-item-num">${index + 1}</span>
-                    <span class="word-item">${word.korean}</span>
-                    <span class="word-item">${word.japanese}</span>
-                    <span class="word-item">${word.hiragana}</span>
-                    <button class="delete-button" data-id="${word.id}">🗑️</button>
+                    <span class="word-item">${word.korean || ''}</span>
+                    <span class="word-item">${word.japanese || ''}</span>
+                    <span class="word-item">${word.hiragana || ''}</span>
+                    <button class="delete-button" data-id="${word.id || ''}">🗑️</button>
                 `;
                 wordList.appendChild(li);
             });
@@ -44,10 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const fetchWords = async () => {
+        console.log('Fetching words from Supabase...'); // 디버깅 로그
         const { data: words, error } = await supabase.from('words').select('*');
         if (error) {
             console.error('Error fetching words:', error);
         } else {
+            console.log('Fetched words:', words); // 디버깅 로그
             renderWords(words);
         }
     };
@@ -115,7 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Invalid API response');
             }
 
-            // 2단계: 일본어 -> 히라가나 변환 (API 교체)
+            // 2단계: 일본어 -> 히라가나 변환 (임시 비활성화 - CORS 문제로 인해)
+            hiraganaOutput.value = translatedText; // 임시로 일본어와 동일하게 표시
+            
+            /* CORS 문제로 임시 비활성화
             try {
                 const hiraResponse = await fetch(`https://jlp.yahooapis.jp/FuriganaService/V2/furigana?appid=dj00aiZpPVhSMEtUd2loTFlYYSZzPWNvbnN1bWVyc2VjcmV0Jng9Njc-&grade=1&sentence=${encodeURIComponent(translatedText)}`);
 
@@ -125,15 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         const furigana = hiraData.result.word.map(w => w.furigana || w.surface).join('');
                         hiraganaOutput.value = furigana;
                     } else {
-                        hiraganaOutput.value = translatedText; // 실패 시 한자 표시
+                        hiraganaOutput.value = translatedText;
                     }
                 } else {
-                     hiraganaOutput.value = translatedText; // 실패 시 한자 표시
+                     hiraganaOutput.value = translatedText;
                 }
             } catch (hiraError) {
                 console.error('Hiragana conversion failed:', hiraError);
-                hiraganaOutput.value = translatedText; // 실패 시 한자 표시
+                hiraganaOutput.value = translatedText;
             }
+            */
 
         } catch (error) {
             console.error('Translation failed:', error);
