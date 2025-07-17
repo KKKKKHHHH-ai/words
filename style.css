@@ -122,12 +122,19 @@ h1 {
 }
 
 #word-list-header span {
-    flex-basis: 30%;
     text-align: center;
 }
 
-#word-list-header span.delete-col {
+#word-list-header .num-col {
     flex-basis: 10%;
+}
+
+#word-list-header .word-col {
+    flex-basis: 25%;
+}
+
+#word-list-header .delete-col {
+    flex-basis: 15%;
 }
 
 #word-list li {
@@ -140,14 +147,20 @@ h1 {
     margin-bottom: 0.5rem;
 }
 
+#word-list li .word-item-num {
+    flex-basis: 10%;
+    text-align: center;
+    padding: 0 0.5rem;
+}
+
 #word-list li .word-item {
-    flex-basis: 30%;
+    flex-basis: 25%;
     text-align: center;
     padding: 0 0.5rem;
 }
 
 #word-list li .delete-button {
-    flex-basis: 10%;
+    flex-basis: 15%;
     background: none;
     border: none;
     color: #ff0000;
