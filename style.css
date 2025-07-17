@@ -14,7 +14,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 500px;
+    max-width: 800px; /* 너비 확장 */
 }
 
 h1 {
@@ -127,15 +127,19 @@ h1 {
 }
 
 #word-list-header .num-col {
-    flex-basis: 10%;
+    flex-basis: 8%;
 }
 
 #word-list-header .word-col {
     flex-basis: 25%;
 }
 
+#word-list-header .check-col {
+    flex-basis: 10%;
+}
+
 #word-list-header .delete-col {
-    flex-basis: 15%;
+    flex-basis: 7%;
 }
 
 #word-list li {
@@ -149,7 +153,7 @@ h1 {
 }
 
 #word-list li .word-item-num {
-    flex-basis: 10%;
+    flex-basis: 8%;
     text-align: center;
     padding: 0 0.5rem;
 }
@@ -160,13 +164,33 @@ h1 {
     padding: 0 0.5rem;
 }
 
+#word-list li .check-col {
+    flex-basis: 10%;
+    text-align: center;
+}
+
+#word-list li .learned-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
 #word-list li .delete-button {
-    flex-basis: 15%;
+    flex-basis: 7%;
     background: none;
     border: none;
     color: #ff0000;
     cursor: pointer;
     font-size: 1.2rem;
+}
+
+#word-list li.learned {
+    background-color: #f0f2f5;
+    color: #8a8d91;
+}
+
+#word-list li.learned .word-item {
+    text-decoration: line-through;
 }
 
 #word-list li .word-item.editable {
