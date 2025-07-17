@@ -77,22 +77,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const deleteWord = async (id) => {
         try {
-            console.log('Deleting word with ID:', id); // 디버깅 로그
+            console.log(`Attempting to delete word with ID: ${id}`); // 디버깅 로그 강화
+            if (!id || id === 'undefined') {
+                console.error('Delete function called with invalid ID:', id);
+                alert('유효하지 않은 ID이므로 삭제할 수 없습니다.');
+                return;
+            }
+
             const { error } = await supabase
                 .from('words')
                 .delete()
                 .eq('id', id);
             
             if (error) {
-                console.error('Error deleting word:', error);
-                alert('삭제에 실패했습니다: ' + error.message);
+                console.error('Error deleting word from Supabase:', error);
+                alert(`삭제에 실패했습니다: ${error.message}`);
             } else {
                 console.log('Word deleted successfully');
                 fetchWords(); // 목록 새로고침
             }
         } catch (err) {
-            console.error('Delete operation failed:', err);
-            alert('삭제 중 오류가 발생했습니다.');
+            console.error('A critical error occurred during delete operation:', err);
+            alert('삭제 중 심각한 오류가 발생했습니다.');
         }
     };
 
@@ -209,21 +215,22 @@ document.addEventListener('DOMContentLoaded', () => {
     wordList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('delete-button')) {
             const idStr = e.target.getAttribute('data-id');
-            console.log('Delete button clicked, ID string:', idStr); // 디버깅 로그
+            console.log('Delete button clicked, data-id attribute:', idStr); // 디버깅 로그
             
             if (idStr && idStr !== 'undefined' && confirm('이 단어를 삭제하시겠습니까?')) {
                 const id = parseInt(idStr, 10);
-                console.log('Parsed ID:', id); // 디버깅 로그
                 
                 if (!isNaN(id)) {
                     await deleteWord(id);
                 } else {
-                    console.error('Invalid ID:', idStr);
-                    alert('잘못된 ID입니다.');
+                    console.error('Parsed ID is not a number:', idStr);
+                    alert('ID가 숫자가 아니므로 삭제할 수 없습니다.');
                 }
-            } else if (idStr === 'undefined' || !idStr) {
-                console.error('Cannot delete word with undefined ID.');
-                alert('ID가 없어 단어를 삭제할 수 없습니다.');
+            } else {
+                console.error('Cannot delete, ID is invalid or confirmation was cancelled. ID:', idStr);
+                if (!idStr || idStr === 'undefined') {
+                    alert('ID가 없어 단어를 삭제할 수 없습니다.');
+                }
             }
         }
     });
