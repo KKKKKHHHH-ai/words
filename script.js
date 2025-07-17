@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderWords = (words) => {
         wordList.innerHTML = '';
-        if (words) {
+        if (words && words.length > 0) {
             words.sort((a, b) => a.id - b.id);
             
             const header = document.createElement('div');
@@ -30,14 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
             wordList.appendChild(header);
 
             words.forEach((word, index) => {
-                console.log('Rendering word:', word); // 디버깅 로그
+                console.log('Word data:', word); // 전체 word 객체 확인
+                console.log('Word ID:', word.id); // ID 값 확인
+                
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <span class="word-item-num">${index + 1}</span>
                     <span class="word-item">${word.korean || ''}</span>
                     <span class="word-item">${word.japanese || ''}</span>
                     <span class="word-item">${word.hiragana || ''}</span>
-                    <button class="delete-button" data-id="${word.id || ''}">🗑️</button>
+                    <button class="delete-button" data-id="${word.id}">🗑️</button>
                 `;
                 wordList.appendChild(li);
             });
