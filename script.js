@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const deleteWord = async (id) => {
-        const { error } = await supabase.from('words').delete().eq('id', id);
+        const { error } = await supabase.from('words').delete().match({ id: id });
         if (error) {
             console.error('Error deleting word:', error);
         } else {
