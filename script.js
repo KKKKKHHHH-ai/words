@@ -34,11 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Word ID:', word.id); // ID 값 확인
                 
                 const li = document.createElement('li');
+                li.setAttribute('data-id', word.id); // li에 id 추가
+
                 li.innerHTML = `
                     <span class="word-item-num">${index + 1}</span>
                     <span class="word-item">${word.korean || ''}</span>
                     <span class="word-item">${word.japanese || ''}</span>
-                    <span class="word-item">${word.hiragana || ''}</span>
+                    <span class="word-item editable" contenteditable="true" data-field="hiragana">${word.hiragana || ''}</span>
                     <button class="delete-button" data-id="${word.id}">🗑️</button>
                 `;
                 wordList.appendChild(li);
@@ -54,6 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.log('Fetched words:', words); // 디버깅 로그
             renderWords(words);
+        }
+    };
+
+    const updateWord = async (id, field, value) => {
+        const { error } = await supabase
+            .from('words')
+            .update({ [field]: value })
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error updating word:', error);
+            alert('단어 업데이트에 실패했습니다.');
         }
     };
 
@@ -211,6 +225,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     addButton.addEventListener('click', addWord);
+
+    wordList.addEventListener('focusout', (e) => {
+        if (e.target.classList.contains('editable') && e.target.dataset.field === 'hiragana') {
+            const li = e.target.closest('li');
+            const id = li.dataset.id;
+            const newValue = e.target.textContent.trim();
+            updateWord(id, 'hiragana', newValue);
+        }
+    });
 
     wordList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('delete-button')) {
