@@ -93,17 +93,19 @@ h1 {
     text-align: center;
     padding: 0.8rem;
     margin-top: 1rem;
-    border: 1px solid #dddfe2;
     border-radius: 6px;
-    background-color: #f5f6f7;
-    color: #4b4f56;
+    background-color: #1877f2;
+    color: #fff;
     text-decoration: none;
+    font-size: 1rem;
     font-weight: bold;
+    border: none;
+    cursor: pointer;
     transition: background-color 0.2s;
 }
 
 .nav-link:hover {
-    background-color: #e9ebee;
+    background-color: #166fe5;
 }
 
 .word-list-container {
