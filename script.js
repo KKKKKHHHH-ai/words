@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchWords = async () => {
         console.log('Fetching words from Supabase...'); // 디버깅 로그
-        const { data: words, error } = await supabase.from('words').select('id, korean, japanese, hiragana');
+        const { data: words, error } = await supabase.from('words').select('*');
         if (error) {
             console.error('Error fetching words:', error);
         } else {

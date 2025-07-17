@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const card = document.querySelector('.card');
     const koreanQuiz = document.getElementById('korean-quiz');
     const japaneseQuiz = document.getElementById('japanese-quiz');
-    const hiraganaQuiz = document.getElementById('hiragana-quiz');
+    const hiraganaQuizFront = document.getElementById('hiragana-quiz-front');
     const nextButton = document.getElementById('next-button');
 
     let words = [];
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentWord = words[randomIndex];
                 koreanQuiz.textContent = currentWord.korean;
                 japaneseQuiz.textContent = currentWord.japanese;
-                hiraganaQuiz.textContent = `(${currentWord.hiragana})`;
+                hiraganaQuizFront.textContent = currentWord.hiragana;
             }
         }, 300); // Allow flip-back animation to finish
     };
