@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="word-col">한글</span>
                 <span class="word-col">일본어</span>
                 <span class="word-col">히라가나</span>
+                <span class="check-col">완료</span>
                 <span class="delete-col"></span>
             `;
             wordList.appendChild(header);
@@ -35,12 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const li = document.createElement('li');
                 li.setAttribute('data-id', word.id); // li에 id 추가
+                li.classList.toggle('learned', word.learned);
 
                 li.innerHTML = `
                     <span class="word-item-num">${index + 1}</span>
                     <span class="word-item">${word.korean || ''}</span>
                     <span class="word-item">${word.japanese || ''}</span>
                     <span class="word-item editable" contenteditable="true" data-field="hiragana">${word.hiragana || ''}</span>
+                    <span class="check-col">
+                        <input type="checkbox" class="learned-checkbox" ${word.learned ? 'checked' : ''}>
+                    </span>
                     <button class="delete-button" data-id="${word.id}">🗑️</button>
                 `;
                 wordList.appendChild(li);
@@ -76,8 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const japanese = japaneseOutput.value.trim();
         const hiragana = hiraganaOutput.value.trim();
 
-        if (korean && japanese && hiragana) {
-            const { error } = await supabase.from('words').insert([{ korean, japanese, hiragana }]);
+        if (korean && japanese) {
+            const { error } = await supabase.from('words').insert([{ 
+                korean, 
+                japanese, 
+                hiragana: hiragana || japanese, // 히라가나 비어있으면 일본어로 채움
+                learned: false 
+            }]);
             if (error) {
                 console.error('Error adding word:', error);
             } else {
@@ -225,6 +235,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     addButton.addEventListener('click', addWord);
+
+    wordList.addEventListener('change', (e) => {
+        if (e.target.classList.contains('learned-checkbox')) {
+            const li = e.target.closest('li');
+            const id = li.dataset.id;
+            const isLearned = e.target.checked;
+            li.classList.toggle('learned', isLearned);
+            updateWord(id, 'learned', isLearned);
+        }
+    });
 
     wordList.addEventListener('focusout', (e) => {
         if (e.target.classList.contains('editable') && e.target.dataset.field === 'hiragana') {
