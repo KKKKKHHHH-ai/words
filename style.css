@@ -111,4 +111,11 @@ h1 {
     color: #ff0000;
     cursor: pointer;
     font-size: 1.2rem;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: #8a8d91;
+    font-size: 0.9rem;
 } 
