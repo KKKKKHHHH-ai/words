@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchWords = async () => {
         console.log('Fetching words from Supabase...'); // 디버깅 로그
-        const { data: words, error } = await supabase.from('words').select('*');
+        const { data: words, error } = await supabase.from('words').select('id, korean, japanese, hiragana');
         if (error) {
             console.error('Error fetching words:', error);
         } else {
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const idStr = e.target.getAttribute('data-id');
             console.log('Delete button clicked, ID string:', idStr); // 디버깅 로그
             
-            if (idStr && confirm('이 단어를 삭제하시겠습니까?')) {
+            if (idStr && idStr !== 'undefined' && confirm('이 단어를 삭제하시겠습니까?')) {
                 const id = parseInt(idStr, 10);
                 console.log('Parsed ID:', id); // 디버깅 로그
                 
@@ -221,6 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Invalid ID:', idStr);
                     alert('잘못된 ID입니다.');
                 }
+            } else if (idStr === 'undefined' || !idStr) {
+                console.error('Cannot delete word with undefined ID.');
+                alert('ID가 없어 단어를 삭제할 수 없습니다.');
             }
         }
     });
