@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단어 퀴즈</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+    <div class="container">
+        <h1>단어 퀴즈</h1>
+        <div class="quiz-container">
+            <div class="card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <p id="korean-quiz"></p>
+                    </div>
+                    <div class="card-back">
+                        <p id="japanese-quiz"></p>
+                        <p id="hiragana-quiz"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="next-button">다음 문제</button>
+        <a href="index.html" class="nav-link">단어장으로 돌아가기</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="quiz.js"></script>
+</body>
+</html> 
