@@ -88,22 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Invalid API response');
             }
 
-            // 2단계: 일본어 -> 히라가나 변환
+            // 2단계: 일본어 -> 히라가나 변환 (API 교체)
             try {
-                const hiraResponse = await fetch('https://kuroshiro-api.vercel.app/api/convert', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        str: translatedText,
-                        mode: 'normal',
-                        to: 'hiragana',
-                    }),
-                });
+                const hiraResponse = await fetch(`https://jlp.yahooapis.jp/FuriganaService/V2/furigana?appid=dj00aiZpPVhSMEtUd2loTFlYYSZzPWNvbnN1bWVyc2VjcmV0Jng9Njc-&grade=1&sentence=${encodeURIComponent(translatedText)}`);
 
                 if (hiraResponse.ok) {
                     const hiraData = await hiraResponse.json();
-                    if (hiraData.ok) {
-                        hiraganaOutput.value = hiraData.result;
+                    if (hiraData.result && hiraData.result.word) {
+                        const furigana = hiraData.result.word.map(w => w.furigana || w.surface).join('');
+                        hiraganaOutput.value = furigana;
                     } else {
                         hiraganaOutput.value = translatedText; // 실패 시 한자 표시
                     }
@@ -179,8 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     wordList.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-button')) {
-            const id = e.target.getAttribute('data-id');
-            deleteWord(id);
+            const id = parseInt(e.target.getAttribute('data-id'), 10);
+            if (!isNaN(id)) {
+                deleteWord(id);
+            }
         }
     });
 
