@@ -21,16 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const header = document.createElement('div');
             header.id = 'word-list-header';
             header.innerHTML = `
-                <span>한글</span>
-                <span>일본어</span>
-                <span>히라가나</span>
+                <span class="num-col">번호</span>
+                <span class="word-col">한글</span>
+                <span class="word-col">일본어</span>
+                <span class="word-col">히라가나</span>
                 <span class="delete-col"></span>
             `;
             wordList.appendChild(header);
 
-            words.forEach(word => {
+            words.forEach((word, index) => {
                 const li = document.createElement('li');
                 li.innerHTML = `
+                    <span class="word-item-num">${index + 1}</span>
                     <span class="word-item">${word.korean}</span>
                     <span class="word-item">${word.japanese}</span>
                     <span class="word-item">${word.hiragana}</span>
