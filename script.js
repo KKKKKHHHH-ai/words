@@ -17,10 +17,23 @@ document.addEventListener('DOMContentLoaded', () => {
         wordList.innerHTML = '';
         if (words) {
             words.sort((a, b) => a.id - b.id);
+            
+            const header = document.createElement('div');
+            header.id = 'word-list-header';
+            header.innerHTML = `
+                <span>한글</span>
+                <span>일본어</span>
+                <span>히라가나</span>
+                <span class="delete-col"></span>
+            `;
+            wordList.appendChild(header);
+
             words.forEach(word => {
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <span class="word-pair">${word.korean}: ${word.japanese} (${word.hiragana})</span>
+                    <span class="word-item">${word.korean}</span>
+                    <span class="word-item">${word.japanese}</span>
+                    <span class="word-item">${word.hiragana}</span>
                     <button class="delete-button" data-id="${word.id}">🗑️</button>
                 `;
                 wordList.appendChild(li);
@@ -56,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const deleteWord = async (id) => {
-        const { error } = await supabase.from('words').delete().match({ id });
+        const { error } = await supabase.from('words').delete().eq('id', id);
         if (error) {
             console.error('Error deleting word:', error);
         } else {

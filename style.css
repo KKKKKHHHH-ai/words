@@ -87,8 +87,45 @@ h1 {
     background-color: #36a420;
 }
 
+.nav-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    background-color: #f5f6f7;
+    color: #4b4f56;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: #e9ebee;
+}
+
 .word-list-container {
     margin-top: 2rem;
+}
+
+#word-list-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem;
+    font-weight: bold;
+    border-bottom: 2px solid #dddfe2;
+    margin-bottom: 0.5rem;
+}
+
+#word-list-header span {
+    flex-basis: 30%;
+    text-align: center;
+}
+
+#word-list-header span.delete-col {
+    flex-basis: 10%;
 }
 
 #word-list li {
@@ -101,11 +138,14 @@ h1 {
     margin-bottom: 0.5rem;
 }
 
-#word-list li .word-pair {
-    flex-grow: 1;
+#word-list li .word-item {
+    flex-basis: 30%;
+    text-align: center;
+    padding: 0 0.5rem;
 }
 
 #word-list li .delete-button {
+    flex-basis: 10%;
     background: none;
     border: none;
     color: #ff0000;
