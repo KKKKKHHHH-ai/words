@@ -7,10 +7,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const koreanQuiz = document.getElementById('korean-quiz');
     const japaneseQuiz = document.getElementById('japanese-quiz');
     const hiraganaQuizFront = document.getElementById('hiragana-quiz-front');
+    const quizLearnedCheckbox = document.getElementById('quiz-learned-checkbox');
     const nextButton = document.getElementById('next-button');
 
     let words = [];
     let currentWord = null;
+
+    const updateWordLearnedStatus = async (id, isLearned) => {
+        const { error } = await supabase
+            .from('words')
+            .update({ learned: isLearned })
+            .eq('id', id);
+        if (error) {
+            console.error('Error updating word status:', error);
+        }
+    };
 
     const fetchWords = async () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -18,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let query = supabase.from('words').select('*');
 
-        if (mode === 'learned') {
-            document.querySelector('h1').textContent = '외운 단어 퀴즈';
-            query = query.eq('learned', true);
+        if (mode === 'unlearned') {
+            document.querySelector('h1').textContent = '외우지 못한 단어 퀴즈';
+            query = query.eq('learned', false);
         } else {
             document.querySelector('h1').textContent = '전체 단어 퀴즈';
         }
@@ -35,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (words.length > 0) {
                 showNextWord();
             } else {
-                koreanQuiz.textContent = mode === 'learned' ? '체크한 단어가 없습니다.' : '단어장에 단어를 추가해주세요.';
+                koreanQuiz.textContent = mode === 'unlearned' ? '외우지 못한 단어가 없습니다!' : '단어장에 단어를 추가해주세요.';
             }
         }
     };
@@ -50,12 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 koreanQuiz.textContent = currentWord.korean;
                 japaneseQuiz.textContent = currentWord.japanese;
                 hiraganaQuizFront.textContent = currentWord.hiragana;
+                quizLearnedCheckbox.checked = currentWord.learned;
             }
         }, 300); // Allow flip-back animation to finish
     };
 
     card.addEventListener('click', () => {
         card.classList.toggle('flipped');
+    });
+
+    quizLearnedCheckbox.addEventListener('change', () => {
+        if (currentWord) {
+            const isLearned = quizLearnedCheckbox.checked;
+            currentWord.learned = isLearned; // 로컬 상태 즉시 업데이트
+            updateWordLearnedStatus(currentWord.id, isLearned);
+        }
     });
 
     nextButton.addEventListener('click', showNextWord);

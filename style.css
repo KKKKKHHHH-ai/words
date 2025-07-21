@@ -116,10 +116,10 @@ h1 {
     background-color: #166fe5;
 }
 
-#learned-quiz-button {
+#unlearned-quiz-button {
     background-color: #6c757d;
 }
-#learned-quiz-button:hover {
+#unlearned-quiz-button:hover {
     background-color: #5a6268;
 }
 
