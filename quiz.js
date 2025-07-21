@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let words = [];
     let currentWord = null;
+    let remainingWords = [];
+    let quizMode = 'all';
 
     const updateWordLearnedStatus = async (id, isLearned) => {
         const { error } = await supabase
@@ -26,11 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchWords = async () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
+        quizMode = urlParams.get('mode');
 
         let query = supabase.from('words').select('*');
 
-        if (mode === 'learned') {
+        if (quizMode === 'learned') {
             document.querySelector('h1').textContent = '복습할 단어 퀴즈';
             query = query.eq('learned', true);
         } else {
@@ -45,36 +47,50 @@ document.addEventListener('DOMContentLoaded', () => {
             koreanQuiz.textContent = '단어를 불러오는 데 실패했습니다.';
         } else {
             words = data;
-
-            // 퀴즈 정보 업데이트
-            const totalWords = words.length;
-            if (mode === 'learned') {
-                quizInfo.textContent = `총 ${totalWords}개의 단어를 복습해야 해요!`;
-            } else {
-                const reviewCount = words.filter(word => word.learned).length;
-                quizInfo.textContent = `총 ${totalWords}개의 단어 중 ${reviewCount}개를 복습해야 해요!`;
-            }
-
-            if (words.length > 0) {
+            remainingWords = [...words]; // 퀴즈 풀 단어 목록 복사
+            updateQuizInfo(); // 정보 업데이트
+            if (remainingWords.length > 0) {
                 showNextWord();
             } else {
-                koreanQuiz.textContent = mode === 'learned' ? '복습할 단어가 없습니다!' : '단어장에 단어를 추가해주세요.';
+                koreanQuiz.textContent = quizMode === 'learned' ? '복습할 단어가 없습니다!' : '단어장에 단어를 추가해주세요.';
             }
+        }
+    };
+
+    const updateQuizInfo = () => {
+        const totalWords = words.length;
+        if (quizMode === 'learned') {
+            quizInfo.textContent = `총 ${totalWords}개의 단어를 복습합니다. (${totalWords - remainingWords.length + 1}/${totalWords})`;
+        } else {
+            const currentCount = totalWords - remainingWords.length + 1;
+            quizInfo.textContent = `총 ${totalWords}개의 단어 중 ${currentCount}번째`;
         }
     };
 
     const showNextWord = () => {
         card.classList.remove('flipped');
         
+        if (remainingWords.length === 0) {
+            quizInfo.textContent = "퀴즈 끝! 참 잘했어요! 🎉";
+            koreanQuiz.textContent = "";
+            japaneseQuiz.textContent = "";
+            hiraganaQuizFront.textContent = "";
+            quizLearnedCheckbox.style.display = 'none';
+            return;
+        }
+
         setTimeout(() => {
-            if (words.length > 0) {
-                const randomIndex = Math.floor(Math.random() * words.length);
-                currentWord = words[randomIndex];
-                koreanQuiz.textContent = currentWord.korean;
-                japaneseQuiz.textContent = currentWord.japanese;
-                hiraganaQuizFront.textContent = currentWord.hiragana;
-                quizLearnedCheckbox.checked = currentWord.learned;
-            }
+            const randomIndex = Math.floor(Math.random() * remainingWords.length);
+            currentWord = remainingWords[randomIndex];
+            remainingWords.splice(randomIndex, 1); // 출제된 단어는 목록에서 제거
+
+            koreanQuiz.textContent = currentWord.korean;
+            japaneseQuiz.textContent = currentWord.japanese;
+            hiraganaQuizFront.textContent = currentWord.hiragana;
+            quizLearnedCheckbox.checked = currentWord.learned;
+            quizLearnedCheckbox.style.display = 'inline-block';
+
+            updateQuizInfo(); // 정보 업데이트
         }, 300); // Allow flip-back animation to finish
     };
 
