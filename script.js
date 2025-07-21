@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addButton = document.getElementById('add-button');
     const wordList = document.getElementById('word-list');
     const suggestionBox = document.querySelector('.suggestion-box');
+    const unlearnedFilterCheckbox = document.getElementById('unlearned-filter-checkbox');
 
     const SUPABASE_URL = 'https://evkvkaygvasckxgeytqb.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2a3ZrYXlndmFzY2t4Z2V5dHFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3MzcxNjEsImV4cCI6MjA2ODMxMzE2MX0.H8lPBay8MnCn-7ixAM-enFU3LOD1Jm6Hj_6rHyAMD3E';
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let debounceTimer;
+    let allWords = []; // 모든 단어를 저장할 배열
 
     const renderWords = (words) => {
         wordList.innerHTML = '';
@@ -53,6 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const applyFilter = () => {
+        const showOnlyUnlearned = unlearnedFilterCheckbox.checked;
+        localStorage.setItem('unlearnedFilter', showOnlyUnlearned); // 필터 상태 저장
+        if (showOnlyUnlearned) {
+            const unlearnedWords = allWords.filter(word => !word.learned);
+            renderWords(unlearnedWords);
+        } else {
+            renderWords(allWords);
+        }
+    };
+
     const fetchWords = async () => {
         console.log('Fetching words from Supabase...'); // 디버깅 로그
         const { data: words, error } = await supabase.from('words').select('*');
@@ -60,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching words:', error);
         } else {
             console.log('Fetched words:', words); // 디버깅 로그
-            renderWords(words);
+            allWords = words; // 가져온 단어를 전역 변수에 저장
+            applyFilter(); // 필터 적용하여 렌더링
         }
     };
 
@@ -236,13 +250,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addButton.addEventListener('click', addWord);
 
+    unlearnedFilterCheckbox.addEventListener('change', applyFilter);
+
     wordList.addEventListener('change', (e) => {
         if (e.target.classList.contains('learned-checkbox')) {
             const li = e.target.closest('li');
             const id = li.dataset.id;
             const isLearned = e.target.checked;
             li.classList.toggle('learned', isLearned);
-            updateWord(id, 'learned', isLearned);
+            updateWord(id, 'learned', isLearned).then(() => {
+                const wordToUpdate = allWords.find(w => w.id == id);
+                if(wordToUpdate) wordToUpdate.learned = isLearned;
+                applyFilter();
+            });
         }
     });
 
@@ -281,5 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     japaneseOutput.readOnly = false;
     hiraganaOutput.readOnly = false;
     
+    // 페이지 로드 시 저장된 필터 상태 복원
+    unlearnedFilterCheckbox.checked = localStorage.getItem('unlearnedFilter') === 'true';
     fetchWords();
 }); 

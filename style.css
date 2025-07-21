@@ -123,8 +123,13 @@ h1 {
     background-color: #5a6268;
 }
 
+.filter-container {
+    margin-top: 1.5rem;
+    text-align: right;
+}
+
 .word-list-container {
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 #word-list-header {
