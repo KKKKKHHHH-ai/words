@@ -13,7 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentWord = null;
 
     const fetchWords = async () => {
-        const { data, error } = await supabase.from('words').select('*');
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+
+        let query = supabase.from('words').select('*');
+
+        if (mode === 'learned') {
+            document.querySelector('h1').textContent = '외운 단어 퀴즈';
+            query = query.eq('learned', true);
+        } else {
+            document.querySelector('h1').textContent = '전체 단어 퀴즈';
+        }
+
+        const { data, error } = await query;
+
         if (error) {
             console.error('Error fetching words:', error);
             koreanQuiz.textContent = '단어를 불러오는 데 실패했습니다.';
@@ -22,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (words.length > 0) {
                 showNextWord();
             } else {
-                koreanQuiz.textContent = '단어장에 단어를 추가해주세요.';
+                koreanQuiz.textContent = mode === 'learned' ? '체크한 단어가 없습니다.' : '단어장에 단어를 추가해주세요.';
             }
         }
     };
