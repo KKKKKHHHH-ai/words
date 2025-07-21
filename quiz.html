@@ -20,14 +20,18 @@
                     <div class="card-back">
                         <p id="japanese-quiz"></p>
                         <div class="quiz-check-container">
-                            <label>
+                            <label for="quiz-learned-checkbox" class="star-label">
                                 <input type="checkbox" id="quiz-learned-checkbox">
-                                학습 완료
+                                <span class="star-icon empty">☆</span>
+                                <span class="star-icon filled">★</span>
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="quiz-info-container">
+            <p id="quiz-info"></p>
         </div>
         <button id="next-button">다음 문제</button>
         <a href="index.html" class="nav-link">단어장으로 돌아가기</a>
