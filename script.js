@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const showOnlyUnlearned = unlearnedFilterCheckbox.checked;
         localStorage.setItem('unlearnedFilter', showOnlyUnlearned); // 필터 상태 저장
         if (showOnlyUnlearned) {
-            const unlearnedWords = allWords.filter(word => !word.learned);
+            const unlearnedWords = allWords.filter(word => word.learned);
             renderWords(unlearnedWords);
         } else {
             renderWords(allWords);
