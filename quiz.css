@@ -38,6 +38,7 @@
     font-size: 1.5rem;
     padding: 1rem;
     box-sizing: border-box;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
 }
 
 .card-back {
