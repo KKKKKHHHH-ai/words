@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiraganaQuizFront = document.getElementById('hiragana-quiz-front');
     const quizLearnedCheckbox = document.getElementById('quiz-learned-checkbox');
     const nextButton = document.getElementById('next-button');
+    const quizInfo = document.getElementById('quiz-info');
 
     let words = [];
     let currentWord = null;
@@ -40,9 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (error) {
             console.error('Error fetching words:', error);
+            quizInfo.textContent = '';
             koreanQuiz.textContent = '단어를 불러오는 데 실패했습니다.';
         } else {
             words = data;
+
+            // 퀴즈 정보 업데이트
+            const totalWords = words.length;
+            if (mode === 'unlearned') {
+                quizInfo.textContent = `총 ${totalWords}개의 단어를 외워야 해요!`;
+            } else {
+                const learnedCount = words.filter(word => word.learned).length;
+                quizInfo.textContent = `총 ${totalWords}개의 단어 중 ${learnedCount}개를 외웠어요!`;
+            }
+
             if (words.length > 0) {
                 showNextWord();
             } else {

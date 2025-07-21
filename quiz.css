@@ -48,13 +48,36 @@
     margin-top: 20px;
     font-size: 1rem;
     color: #555;
+    cursor: pointer; /* 라벨 클릭 가능하도록 커서 변경 */
 }
 
+/* 기존 체크박스는 숨김 */
 #quiz-learned-checkbox {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    margin-right: 5px;
+    display: none;
+}
+
+.star-label {
+    font-size: 2rem;
+    color: #fadb14; /* 별 색상 */
+}
+
+/* 체크되지 않았을 때: 빈 별만 보임 */
+.star-icon.filled {
+    display: none;
+}
+
+/* 체크되었을 때: 채워진 별만 보임 */
+#quiz-learned-checkbox:checked + .star-icon.empty {
+    display: none;
+}
+#quiz-learned-checkbox:checked ~ .star-icon.filled {
+    display: inline;
+}
+
+.quiz-info-container {
+    text-align: center;
+    margin: 1rem 0;
+    color: #555;
 }
 
 #next-button {
