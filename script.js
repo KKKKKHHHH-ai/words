@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="word-col">한글</span>
                 <span class="word-col">일본어</span>
                 <span class="word-col">히라가나</span>
-                <span class="check-col">완료</span>
+                <span class="check-col">복습</span>
                 <span class="delete-col"></span>
             `;
             wordList.appendChild(header);
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="word-item">${word.japanese || ''}</span>
                     <span class="word-item editable" contenteditable="true" data-field="hiragana">${word.hiragana || ''}</span>
                     <span class="check-col">
-                        <input type="checkbox" class="learned-checkbox" ${word.learned ? 'checked' : ''}>
+                        <button class="review-button">${word.learned ? '❌' : '➖'}</button>
                     </span>
                     <button class="delete-button" data-id="${word.id}">🗑️</button>
                 `;
@@ -253,17 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
     unlearnedFilterCheckbox.addEventListener('change', applyFilter);
 
     wordList.addEventListener('change', (e) => {
-        if (e.target.classList.contains('learned-checkbox')) {
-            const li = e.target.closest('li');
-            const id = li.dataset.id;
-            const isLearned = e.target.checked;
-            li.classList.toggle('learned', isLearned);
-            updateWord(id, 'learned', isLearned).then(() => {
-                const wordToUpdate = allWords.find(w => w.id == id);
-                if(wordToUpdate) wordToUpdate.learned = isLearned;
-                applyFilter();
-            });
-        }
+        // 이 이벤트 리스너는 이제 퀴즈 페이지에서만 사용되므로 여기서는 제거하거나 주석 처리할 수 있습니다.
+        // 또는 다른 체크박스가 추가될 경우를 대비해 둡니다.
     });
 
     wordList.addEventListener('focusout', (e) => {
@@ -276,7 +267,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     wordList.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('delete-button')) {
+        if (e.target.classList.contains('review-button')) {
+            const li = e.target.closest('li');
+            const id = li.dataset.id;
+            const word = allWords.find(w => w.id == id);
+            if (word) {
+                const newLearnedState = !word.learned;
+                word.learned = newLearnedState; // 로컬 상태 업데이트
+                e.target.textContent = newLearnedState ? '❌' : '➖';
+                await updateWord(id, 'learned', newLearnedState);
+            }
+        } else if (e.target.classList.contains('delete-button')) {
             const idStr = e.target.getAttribute('data-id');
             console.log('Delete button clicked, data-id attribute:', idStr); // 디버깅 로그
             

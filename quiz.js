@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let query = supabase.from('words').select('*');
 
-        if (mode === 'unlearned') {
-            document.querySelector('h1').textContent = '외우지 못한 단어 퀴즈';
-            query = query.eq('learned', false);
+        if (mode === 'learned') {
+            document.querySelector('h1').textContent = '복습할 단어 퀴즈';
+            query = query.eq('learned', true);
         } else {
             document.querySelector('h1').textContent = '전체 단어 퀴즈';
         }
@@ -48,17 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 퀴즈 정보 업데이트
             const totalWords = words.length;
-            if (mode === 'unlearned') {
-                quizInfo.textContent = `총 ${totalWords}개의 단어를 외워야 해요!`;
+            if (mode === 'learned') {
+                quizInfo.textContent = `총 ${totalWords}개의 단어를 복습해야 해요!`;
             } else {
-                const learnedCount = words.filter(word => word.learned).length;
-                quizInfo.textContent = `총 ${totalWords}개의 단어 중 ${learnedCount}개를 외웠어요!`;
+                const reviewCount = words.filter(word => word.learned).length;
+                quizInfo.textContent = `총 ${totalWords}개의 단어 중 ${reviewCount}개를 복습해야 해요!`;
             }
 
             if (words.length > 0) {
                 showNextWord();
             } else {
-                koreanQuiz.textContent = mode === 'unlearned' ? '외우지 못한 단어가 없습니다!' : '단어장에 단어를 추가해주세요.';
+                koreanQuiz.textContent = mode === 'learned' ? '복습할 단어가 없습니다!' : '단어장에 단어를 추가해주세요.';
             }
         }
     };
